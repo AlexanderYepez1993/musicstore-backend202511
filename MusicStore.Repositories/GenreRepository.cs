@@ -1,52 +1,57 @@
-﻿using MusicStore.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using MusicStore.Entities;
+using MusicStore.Persistence;
 
 namespace MusicStore.Repositories
 {
-    public class GenreRepository
+    public class GenreRepository : IGenreRepository
     {
-        private readonly List<Genre> genresList;
-        public GenreRepository()
+        private readonly ApplicationDbContext context;
+
+        public GenreRepository(ApplicationDbContext context)
         {
-            genresList = new List<Genre>();
-            genresList.Add(new Genre { Id = 1, Name = "Salsa" });
-            genresList.Add(new Genre { Id = 2, Name = "Cumbia" });
-            genresList.Add(new Genre { Id = 40, Name = "Bachata" });
+            this.context = context;
         }
 
         //methods...
-        public List<Genre> Get()
+        public async Task<List<Genre>> GetAsync()
         {
-            return genresList;
+            return await context.Genres.ToListAsync();
         }
 
-        public Genre? Get(int id)
+        public async Task<Genre?> GetAsync(int id)
         {
-            return genresList.FirstOrDefault(x => x.Id == id);
+            return await context.Genres.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Genre Add(Genre genre)
+        public async Task<int> AddAsync(Genre genre)
         {
-            var lastItem = genresList.MaxBy(x => x.Id);
-            genre.Id = lastItem is null ? 1 : lastItem.Id + 1;
-            genresList.Add(genre);
-            return genre;
+            context.Genres.Add(genre);
+            await context.SaveChangesAsync();
+            return genre.Id;
         }
 
-        public void Update(int id, Genre genre)
+        public async Task UpdateAsync(int id, Genre genre)
         {
-            var item = Get(id);
+            var item = await GetAsync(id);
+
             if (item is not null)
             {
                 item.Name = genre.Name;
                 item.Status = genre.Status;
+                context.Update(item);
+                await context.SaveChangesAsync();
             }
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            var item = Get(id);
+            var item = await GetAsync(id);
             if (item is not null)
-                genresList.Remove(item);
+            {
+                context.Genres.Remove(item);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

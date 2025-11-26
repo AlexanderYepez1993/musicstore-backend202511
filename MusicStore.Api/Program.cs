@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 // Registering services
-builder.Services.AddSingleton<GenreRepository>();
+builder.Services.AddTransient<IGenreRepository, GenreRepository>();
 
 var app = builder.Build();
 
@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+            
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

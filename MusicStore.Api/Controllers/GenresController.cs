@@ -8,50 +8,50 @@ namespace MusicStore.Api.Controllers
     [Route("api/genres")]
     public class GenresController : ControllerBase
     {
-        private readonly GenreRepository repository;
+        private readonly IGenreRepository repository;
 
-        public GenresController(GenreRepository repository)
+        public GenresController(IGenreRepository repository)
         {
             this.repository = repository;
         }
 
         //api/genres
         [HttpGet]
-        public ActionResult<List<Genre>> Get()
+        public async Task<IActionResult> Get()
         {
-            var data = repository.Get();
+            var data = await repository.GetAsync();
             return Ok(data);
         }
 
         //api/genres/1
         [HttpGet("{id:int}")]
-        public ActionResult<Genre> Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var item = repository.Get(id);
+            var item = await repository.GetAsync(id);
             return item is not null ? Ok(item) : NotFound();
         }
 
         //api/genres
         [HttpPost]
-        public ActionResult<Genre> Post(Genre genre)
+        public async Task<IActionResult> Post(Genre genre)
         {
-            repository.Add(genre);
+            await repository.AddAsync(genre);
             return Ok(genre);
         }
 
         //api/genres/1 --- x es el id
         [HttpPut("{x:int}")]  
-        public ActionResult Put(int x, Genre genre)
+        public async Task<IActionResult> Put(int x, Genre genre)
         {
-            repository.Update(x, genre);
+            await repository.UpdateAsync(x, genre);
             return Ok();
         }
          
         //api/genres/1
         [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            repository.Delete(id);
+            await repository.DeleteAsync(id);
             return Ok();
         }
     }
