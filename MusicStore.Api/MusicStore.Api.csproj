@@ -22,6 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\MusicStore.Dto\MusicStore.Dto.csproj" />
 	  <ProjectReference Include="..\MusicStore.Entities\MusicStore.Entities.csproj" />
 	  <ProjectReference Include="..\MusicStore.Persistence\MusicStore.Persistence.csproj" />
 	  <ProjectReference Include="..\MusicStore.Repositories\MusicStore.Repositories.csproj" />
